@@ -83,14 +83,6 @@ for i in range(4):
 
 for i in range(4):
     pivot = AA[i][i]
-    if pivot == 0:
-        t = i + 1
-        while AA[t][i] == 0 and t < 4:
-            t += 1
-            assert t != 4, 'G matrix must be invertible'
-            for j in range(8):
-                AA[i][j], AA[t][j] = AA[t][j], AA[i][j]
-            pivot = AA[i][i]
     for j in range(8):
         if AA[i][j] != 0:
             AA[i][j] = a_log[(255 + log[AA[i][j] & 0xFF] - log[pivot & 0xFF]) % 255]
