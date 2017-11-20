@@ -17,6 +17,7 @@ class Rijndael:
             raise ValueError('Invalid key size: %s' % str(len(key)))
 
         self.block_size = block_size
+        self.key = key
 
         rounds = num_rounds[len(key)][block_size]
         b_c = block_size // 4
@@ -84,9 +85,9 @@ class Rijndael:
         self.Ke = k_e
         self.Kd = k_d
 
-    def encrypt(self, plaintext):
-        if len(plaintext) != self.block_size:
-            raise ValueError('wrong block length, expected ' + str(self.block_size) + ' got ' + str(len(plaintext)))
+    def encrypt(self, source):
+        if len(source) != self.block_size:
+            raise ValueError('wrong block length, expected ' + str(self.block_size) + ' got ' + str(len(source)))
         k_e = self.Ke
 
         b_c = self.block_size // 4
@@ -103,12 +104,12 @@ class Rijndael:
         a = [0] * b_c
         # temporary work array
         t = []
-        # plaintext to ints + key
+        # source to ints + key
         for i in range(b_c):
-            t.append((ord(plaintext[i * 4]) << 24 |
-                      ord(plaintext[i * 4 + 1]) << 16 |
-                      ord(plaintext[i * 4 + 2]) << 8 |
-                      ord(plaintext[i * 4 + 3])) ^ k_e[0][i])
+            t.append((ord(source[i * 4: i * 4 + 1]) << 24 |
+                      ord(source[i * 4 + 1: i * 4 + 1 + 1]) << 16 |
+                      ord(source[i * 4 + 2: i * 4 + 2 + 1]) << 8 |
+                      ord(source[i * 4 + 3: i * 4 + 3 + 1])) ^ k_e[0][i])
         # apply round transforms
         for r in range(1, rounds):
             for i in range(b_c):
@@ -130,12 +131,12 @@ class Rijndael:
             out += bytes([xx])
         return out
 
-    def decrypt(self, cipher_text):
-        if len(cipher_text) != self.block_size:
+    def decrypt(self, cipher):
+        if len(cipher) != self.block_size:
             raise ValueError(
                 'wrong block length, expected %s got %s' % (
                     str(self.block_size),
-                    str(len(cipher_text))
+                    str(len(cipher))
                 )
             )
 
@@ -154,12 +155,12 @@ class Rijndael:
         a = [0] * b_c
         # temporary work array
         t = [0] * b_c
-        # cipher_text to ints + key
+        # cipher to ints + key
         for i in range(b_c):
-            t[i] = (ord(cipher_text[i * 4: i * 4 + 1]) << 24 |
-                    ord(cipher_text[i * 4 + 1: i * 4 + 1 + 1]) << 16 |
-                    ord(cipher_text[i * 4 + 2: i * 4 + 2 + 1]) << 8 |
-                    ord(cipher_text[i * 4 + 3: i * 4 + 3 + 1])) ^ k_d[0][i]
+            t[i] = (ord(cipher[i * 4: i * 4 + 1]) << 24 |
+                    ord(cipher[i * 4 + 1: i * 4 + 1 + 1]) << 16 |
+                    ord(cipher[i * 4 + 2: i * 4 + 2 + 1]) << 8 |
+                    ord(cipher[i * 4 + 3: i * 4 + 3 + 1])) ^ k_d[0][i]
         # apply round transforms
         for r in range(1, rounds):
             for i in range(b_c):
@@ -176,4 +177,7 @@ class Rijndael:
             result.append((Si[(t[(i + s1) % b_c] >> 16) & 0xFF] ^ (tt >> 16)) & 0xFF)
             result.append((Si[(t[(i + s2) % b_c] >> 8) & 0xFF] ^ (tt >> 8)) & 0xFF)
             result.append((Si[t[(i + s3) % b_c] & 0xFF] ^ tt) & 0xFF)
-        return ''.join(map(chr, result))
+        out = bytes()
+        for xx in result:
+            out += bytes([xx])
+        return out
