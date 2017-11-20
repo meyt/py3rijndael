@@ -20,10 +20,16 @@ class RijndaelCbcTestCase(unittest.TestCase):
         self.assertEqual(cipher_text, b'1KGc0PMt52Xbell+2y9qDJJp/Yy6b1JR1JWI3f9ALF4=')
         self.assertEqual(rijndael_cbc.decrypt(cipher), padded_text)
 
+        # Long blocks
+        plain_text = b'lorem' * 50
+        padded_text = plain_text.ljust(32, b'\x1b')
+        cipher = rijndael_cbc.encrypt(padded_text)
+        self.assertEqual(rijndael_cbc.decrypt(cipher), padded_text)
+
         # unpad test
         rijndael_cbc.unpad('')
         with self.assertRaises(AssertionError):
-            rijndael_cbc.unpad('no-padding')
+            rijndael_cbc.unpad(b'no-padding')
 
 if __name__ == '__main__':  # pragma: nocover
     unittest.main()

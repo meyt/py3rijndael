@@ -189,19 +189,21 @@ class RijndaelCBC(Rijndael):
         super().__init__(key=key, block_size=block_size)
         self.iv = iv
 
-    def pad(self, pt):
-        return pt.ljust(self.block_size, b"\x1b")
+    def pad(self, source):
+        pad_size = self.block_size - ((len(source) + self.block_size - 1) % self.block_size + 1)
+        return source + b"\0" * pad_size
 
-    def unpad(self, ppt):
-        assert len(ppt) % self.block_size == 0
-        offset = len(ppt)
+    def unpad(self, source):
+        assert len(source) % self.block_size == 0
+        offset = len(source)
         if offset == 0:
-            return ''
+            return b''
         end = offset - self.block_size + 1
+
         while offset > end:
             offset -= 1
-            if ppt[offset] != "\0":
-                return ppt[:offset + 1]
+            if source[offset:offset+1] != b"\0":
+                return source[:offset + 1]
         assert False
 
     def encrypt(self, source: bytes):
@@ -220,8 +222,7 @@ class RijndaelCBC(Rijndael):
         return ct
 
     def decrypt(self, cipher):
-        cipher_text = super().decrypt(cipher)
-        assert len(cipher_text) % self.block_size == 0
+        assert len(cipher) % self.block_size == 0
         ppt = bytes()
         offset = 0
         v = self.iv
