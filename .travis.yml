@@ -1,0 +1,13 @@
+language: python
+python:
+- 3.3
+- 3.4
+- 3.5
+- 3.6
+- nightly
+before_install:
+- pip install -U pip setuptools wheel
+- pip install -r requirements-dev.txt
+install: pip install -e .
+script: coverage run --source py3rijndael $(which nosetests)
+after_success: if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then travis_retry coveralls; fi
