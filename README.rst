@@ -1,6 +1,15 @@
 py3rijndael
 ===========
 
+.. image:: https://travis-ci.org/meyt/py3rijndael.svg?branch=master
+    :target: https://travis-ci.org/meyt/py3rijndael
+
+.. image:: https://coveralls.io/repos/github/meyt/py3rijndael/badge.svg?branch=master
+    :target: https://coveralls.io/github/meyt/py3rijndael?branch=master
+
+.. image:: https://img.shields.io/pypi/pyversions/py3rijndael.svg
+    :target: https://pypi.python.org/pypi/py3rijndael
+
 Rijndael algorithm library for Python3.
 
 Rijndael is the key algorithm of [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard),
