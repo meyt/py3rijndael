@@ -191,6 +191,7 @@ class Rijndael:
 
 
 class RijndaelCBC(Rijndael):
+    pad_with = b'\0'
 
     def __init__(self, key: bytes, iv: bytes, block_size: int=16):
         super().__init__(key=key, block_size=block_size)
@@ -198,7 +199,7 @@ class RijndaelCBC(Rijndael):
 
     def pad(self, source):
         pad_size = self.block_size - ((len(source) + self.block_size - 1) % self.block_size + 1)
-        return source + b"\0" * pad_size
+        return source + self.pad_with * pad_size
 
     def unpad(self, source):
         assert len(source) % self.block_size == 0
@@ -209,7 +210,7 @@ class RijndaelCBC(Rijndael):
 
         while offset > end:
             offset -= 1
-            if source[offset:offset+1] != b"\0":
+            if source[offset:offset+1] != self.pad_with:
                 return source[:offset + 1]
         assert False
 
