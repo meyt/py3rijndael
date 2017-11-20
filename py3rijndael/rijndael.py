@@ -86,8 +86,15 @@ class Rijndael:
         self.Kd = k_d
 
     def encrypt(self, source):
+
         if len(source) != self.block_size:
-            raise ValueError('wrong block length, expected ' + str(self.block_size) + ' got ' + str(len(source)))
+            raise ValueError(
+                'Wrong block length, expected %s got %s' % (
+                    str(self.block_size),
+                    str(len(source))
+                )
+            )
+
         k_e = self.Ke
 
         b_c = self.block_size // 4
