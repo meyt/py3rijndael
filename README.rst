@@ -12,7 +12,7 @@ py3rijndael
 
 Rijndael algorithm library for Python3.
 
-Rijndael is the key algorithm of [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard),
+Rijndael is the key algorithm of `AES <https://en.wikipedia.org/wiki/Advanced_Encryption_Standard>`_,
 and there is some of implementations already exist:
 
 - `pycrypto <https://github.com/dlitz/pycrypto>`_: Very old and not written in python.
