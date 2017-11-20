@@ -181,3 +181,63 @@ class Rijndael:
         for xx in result:
             out += bytes([xx])
         return out
+
+
+class RijndaelCBC(Rijndael):
+
+    def __init__(self, key: bytes, iv: bytes, block_size: int=16):
+        super().__init__(key=key, block_size=block_size)
+        self.iv = iv
+
+    def pad(self, pt):
+        return pt.ljust(self.block_size, b"\x1b")
+
+    def unpad(self, ppt):
+        assert len(ppt) % self.block_size == 0
+        offset = len(ppt)
+        if offset == 0:
+            return ''
+        end = offset - self.block_size + 1
+        while offset > end:
+            offset -= 1
+            if ppt[offset] != "\0":
+                return ppt[:offset + 1]
+        assert False
+
+    def encrypt(self, source: bytes):
+        ppt = self.pad(source)
+        offset = 0
+
+        ct = bytes()
+        v = self.iv
+        while offset < len(ppt):
+            block = ppt[offset:offset + self.block_size]
+            block = self.x_or_block(block, v)
+            block = super().encrypt(block)
+            ct += block
+            offset += self.block_size
+            v = block
+        return ct
+
+    def decrypt(self, cipher):
+        cipher_text = super().decrypt(cipher)
+        assert len(cipher_text) % self.block_size == 0
+        ppt = bytes()
+        offset = 0
+        v = self.iv
+        while offset < len(cipher):
+            block = cipher[offset:offset + self.block_size]
+            decrypted = super().decrypt(block)
+            ppt += self.x_or_block(decrypted, v)
+            offset += self.block_size
+            v = block
+        pt = self.unpad(ppt)
+        return pt
+
+    def x_or_block(self, b1, b2):
+        i = 0
+        r = bytes()
+        while i < self.block_size:
+            r += bytes([ord(b1[i:i+1]) ^ ord(b2[i:i+1])])
+            i += 1
+        return r
