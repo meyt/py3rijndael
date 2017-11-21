@@ -1,4 +1,5 @@
 import copy
+from .paddings import PaddingBase
 from py3rijndael.constants import (
     shifts, r_con, num_rounds, S, Si,
     U1, U2, U3, U4,
@@ -191,31 +192,14 @@ class Rijndael:
 
 
 class RijndaelCbc(Rijndael):
-    pad_with = b'\0'
 
-    def __init__(self, key: bytes, iv: bytes, block_size: int=16):
+    def __init__(self, key: bytes, iv: bytes, padding: PaddingBase, block_size: int=16):
         super().__init__(key=key, block_size=block_size)
         self.iv = iv
-
-    def pad(self, source):
-        pad_size = self.block_size - ((len(source) + self.block_size - 1) % self.block_size + 1)
-        return source + self.pad_with * pad_size
-
-    def unpad(self, source):
-        assert len(source) % self.block_size == 0
-        offset = len(source)
-        if offset == 0:
-            return b''
-        end = offset - self.block_size + 1
-
-        while offset > end:
-            offset -= 1
-            if source[offset:offset+1] != self.pad_with:
-                return source[:offset + 1]
-        assert False
+        self.padding = padding
 
     def encrypt(self, source: bytes):
-        ppt = self.pad(source)
+        ppt = self.padding.encode(source)
         offset = 0
 
         ct = bytes()
@@ -240,7 +224,7 @@ class RijndaelCbc(Rijndael):
             ppt += self.x_or_block(decrypted, v)
             offset += self.block_size
             v = block
-        pt = self.unpad(ppt)
+        pt = self.padding.decode(ppt)
         return pt
 
     def x_or_block(self, b1, b2):

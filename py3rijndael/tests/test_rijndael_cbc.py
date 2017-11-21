@@ -1,6 +1,6 @@
 import unittest
 import base64
-from py3rijndael import RijndaelCbc
+from py3rijndael import RijndaelCbc, ZeroPadding
 
 
 class RijndaelCbcTestCase(unittest.TestCase):
@@ -11,6 +11,7 @@ class RijndaelCbcTestCase(unittest.TestCase):
         rijndael_cbc = RijndaelCbc(
             key=base64.b64decode(key),
             iv=base64.b64decode(iv),
+            padding=ZeroPadding(32),
             block_size=32
         )
         plain_text = b'Mahdi'
@@ -26,10 +27,6 @@ class RijndaelCbcTestCase(unittest.TestCase):
         cipher = rijndael_cbc.encrypt(padded_text)
         self.assertEqual(rijndael_cbc.decrypt(cipher), padded_text)
 
-        # unpad test
-        rijndael_cbc.unpad('')
-        with self.assertRaises(AssertionError):
-            rijndael_cbc.unpad(b'no-padding')
 
 if __name__ == '__main__':  # pragma: nocover
     unittest.main()
