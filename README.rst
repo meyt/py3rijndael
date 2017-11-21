@@ -16,9 +16,9 @@ Rijndael is the key algorithm of `AES <https://en.wikipedia.org/wiki/Advanced_En
 and there is some of implementations already exist:
 
 - `pycrypto <https://github.com/dlitz/pycrypto>`_: Very old and not written in python.
-- `pycryptodome <https://github.com/Legrandin/pycryptodome>`_: In road of `pycrypto` but alive.
+- `pycryptodome <https://github.com/Legrandin/pycryptodome>`_: In road of ``pycrypto`` but alive.
 - `python-cryptoplus <https://github.com/doegox/python-cryptoplus>`_:
-  Tested and works fine. but, not in Python 2, also depend on `pycrypto`.
+  Tested and works fine. but, not in Python 3, also depend on ``pycrypto``.
 - `RijndaelPbkdf <https://github.com/dsoprea/RijndaelPbkdf>`_:
   Tested and works fine. but, old PyPi release and not active (i have no time to wait for maintainer).
 - https://gist.github.com/jeetsukumaran/1291836 : The gist i borrowed initial source.
