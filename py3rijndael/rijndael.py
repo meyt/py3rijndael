@@ -190,7 +190,7 @@ class Rijndael:
         return out
 
 
-class RijndaelCBC(Rijndael):
+class RijndaelCbc(Rijndael):
     pad_with = b'\0'
 
     def __init__(self, key: bytes, iv: bytes, block_size: int=16):

@@ -1,6 +1,6 @@
 import unittest
 import base64
-from py3rijndael import RijndaelCBC
+from py3rijndael import RijndaelCbc
 
 
 class RijndaelCbcTestCase(unittest.TestCase):
@@ -8,7 +8,7 @@ class RijndaelCbcTestCase(unittest.TestCase):
     def test_rijndael_cbc(self):
         key = 'qBS8uRhEIBsr8jr8vuY9uUpGFefYRL2HSTtrKhaI1tk='
         iv = 'kByhT6PjYHzJzZfXvb8Aw5URMbQnk6NM+g3IV5siWD4='
-        rijndael_cbc = RijndaelCBC(
+        rijndael_cbc = RijndaelCbc(
             key=base64.b64decode(key),
             iv=base64.b64decode(iv),
             block_size=32

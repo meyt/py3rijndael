@@ -1,4 +1,4 @@
-from .rijndael import Rijndael, RijndaelCBC
+from .rijndael import Rijndael, RijndaelCbc
 
 
 __version__ = '0.2.0'
