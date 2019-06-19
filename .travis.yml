@@ -1,13 +1,15 @@
+dist: xenial
 language: python
 python:
 - 3.3
 - 3.4
 - 3.5
 - 3.6
-- nightly
+- 3.7
+- 3.8-dev
 before_install:
 - pip install -U pip setuptools wheel
 - pip install -r requirements-dev.txt
 install: pip install -e .
 script: coverage run --source py3rijndael $(which nosetests)
-after_success: if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then travis_retry coveralls; fi
+after_success: if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then travis_retry coveralls; fi
