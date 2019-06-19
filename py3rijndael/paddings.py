@@ -29,8 +29,10 @@ class ZeroPadding(PaddingBase):
 
         while offset > end:
             offset -= 1
-            if source[offset:offset+1] != b'\0':
+            if source[offset]:
                 return source[:offset + 1]
+
+        return source[:end]
 
 
 class Pkcs7Padding(PaddingBase):
